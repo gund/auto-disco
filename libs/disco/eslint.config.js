@@ -1,13 +1,13 @@
-import { FlatCompat } from '@eslint/eslintrc';
-import baseConfig from '../../eslint.config.js';
-import js from '@eslint/js';
+const { FlatCompat } = require('@eslint/eslintrc');
+const js = require('@eslint/js');
+const baseConfig = require('../../eslint.config.js');
 
 const compat = new FlatCompat({
-  baseDirectory: import.meta.dirname,
+  baseDirectory: __dirname,
   recommendedConfig: js.configs.recommended,
 });
 
-export default [
+module.exports = [
   ...baseConfig,
   {
     files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
