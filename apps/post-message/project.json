@@ -1,0 +1,112 @@
+{
+  "name": "post-message",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/post-message/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/esbuild:esbuild",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "platform": "node",
+        "outputPath": "dist/apps/post-message/",
+        "format": ["esm"],
+        "bundle": true,
+        "main": "apps/post-message/src/main.ts",
+        "tsConfig": "apps/post-message/tsconfig.app.json",
+        "assets": ["apps/post-message/src/assets"],
+        "generatePackageJson": true,
+        "esbuildOptions": {
+          "sourcemap": true,
+          "outExtension": {
+            ".js": ".js"
+          }
+        }
+      },
+      "configurations": {
+        "development": {},
+        "production": {
+          "esbuildOptions": {
+            "sourcemap": false,
+            "outExtension": {
+              ".js": ".js"
+            }
+          }
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "post-message:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "post-message:build:development"
+        },
+        "production": {
+          "buildTarget": "post-message:build:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "apps/post-message/jest.config.ts"
+      }
+    },
+    "image": {
+      "executor": "nx:run-commands",
+      "outputs": [],
+      "options": {
+        "command": "docker buildx build --platform {args.platforms} -t gundua/disco-post-message:{args.v} {args.output} -f apps/post-message/container/Dockerfile .",
+        "output": "",
+        "v": "latest"
+      },
+      "configurations": {
+        "init": {
+          "command": "docker buildx create --use --bootstrap"
+        },
+        "amd64": {
+          "platforms": "linux/amd64"
+        },
+        "arm64": {
+          "platforms": "linux/arm64/v8"
+        },
+        "all": {
+          "platforms": "linux/amd64,linux/arm64/v8"
+        }
+      }
+    },
+    "k8s-apply": {
+      "executor": "nx:run-commands",
+      "outputs": [],
+      "options": {
+        "command": "kubectl apply -f apps/post-message/deployment"
+      }
+    },
+    "k8s-deploy": {
+      "executor": "nx:run-commands",
+      "outputs": [],
+      "options": {
+        "command": "kubectl set image deployments/auto-disco.post-message ss-sauceme-967860=gundua/disco-post-message:{args.v}"
+      },
+      "configurations": {
+        "staus": {
+          "command": "kubectl rollout status deployments/auto-disco.post-message"
+        },
+        "revert": {
+          "command": "kubectl rollout undo deployments/auto-disco.post-message"
+        }
+      }
+    }
+  },
+  "tags": ["app"]
+}

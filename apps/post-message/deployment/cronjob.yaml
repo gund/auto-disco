@@ -1,0 +1,45 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: auto-disco.post-message
+spec:
+  schedule: '0 3,11,19 * * *' # 3am 11am 19pm
+  concurrencyPolicy: Replace
+  startingDeadlineSeconds: 18000 # 5 hours
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: ss-sauceme-967860
+              image: gundua/disco-post-message:latest
+              imagePullPolicy: IfNotPresent
+              env:
+                - name: SERVER_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: disco.post-message.ss-0.0.967860
+                      key: serverId
+                - name: CHANNEL_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: disco.post-message.ss-0.0.967860
+                      key: channelId
+                - name: MESSAGE
+                  valueFrom:
+                    secretKeyRef:
+                      name: disco.post-message.ss-0.0.967860
+                      key: message
+                - name: TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: disco.post-message.ss-0.0.967860
+                      key: token
+              resources:
+                requests:
+                  cpu: '0.1'
+                  memory: '50Mi'
+                limits:
+                  cpu: '0.1'
+                  memory: '100Mi'
+          restartPolicy: OnFailure

@@ -1,0 +1,9 @@
+{
+  "name": "@auto-disco/post-message",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "module": "./main.js",
+  "main": "./main.js",
+  "dependencies": {}
+}
