@@ -6,6 +6,7 @@ spec:
   schedule: '0 3,11,19 * * *' # 3am 11am 19pm
   concurrencyPolicy: Replace
   startingDeadlineSeconds: 18000 # 5 hours
+  timeZone: 'Europe/Berlin'
   jobTemplate:
     spec:
       template:
