@@ -1,4 +1,5 @@
 import { DiscoAuth } from './auth';
+import { HttpError } from './http-error';
 
 export interface DiscoApiConfig {
   auth: DiscoAuth;
@@ -25,12 +26,18 @@ export class DiscoApi {
     this.fetch = config.fetch ?? fetch;
   }
 
-  send(...args: Parameters<typeof fetch>) {
+  async send(...args: Parameters<typeof fetch>) {
     const req = this.#auth.authorize(new Request(...args));
 
     this.extraHeaders.forEach((value, key) => req.headers.set(key, value));
 
-    return this.fetch(req);
+    const res = await this.fetch(req);
+
+    if (!res.ok) {
+      throw new HttpError(req, res);
+    }
+
+    return res;
   }
 
   intoBody(data: Record<string, unknown>) {
