@@ -96,14 +96,11 @@
       "executor": "nx:run-commands",
       "outputs": [],
       "options": {
-        "command": "kubectl set image deployments/auto-disco.post-message ss-sauceme-967860=gundua/disco-post-message:{args.v}"
+        "command": "kubectl set image cronjob/auto-disco.post-message ss-sauceme-967860=gundua/disco-post-message:{args.v}"
       },
       "configurations": {
-        "staus": {
-          "command": "kubectl rollout status deployments/auto-disco.post-message"
-        },
         "revert": {
-          "command": "kubectl rollout undo deployments/auto-disco.post-message"
+          "command": "kubectl rollout undo cronjob/auto-disco.post-message"
         }
       }
     }
