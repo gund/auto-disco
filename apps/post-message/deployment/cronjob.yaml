@@ -8,8 +8,15 @@ spec:
   startingDeadlineSeconds: 18000 # 5 hours
   timeZone: 'Europe/Berlin'
   jobTemplate:
+    metadata:
+      labels:
+        cronjob: auto-disco.post-message
     spec:
+      backoffLimit: 3
       template:
+        metadata:
+          labels:
+            cronjob: auto-disco.post-message
         spec:
           containers:
             - name: ss-sauceme-967860
@@ -43,4 +50,4 @@ spec:
                 limits:
                   cpu: '0.1'
                   memory: '100Mi'
-          restartPolicy: OnFailure
+          restartPolicy: Never
